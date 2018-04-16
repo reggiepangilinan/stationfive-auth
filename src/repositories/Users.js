@@ -1,5 +1,5 @@
 class Users {
-  constructor(users = [{email : 'daniel@stationfive.com' , password : 'abc123'}]) {
+  constructor(users = []) {
     this.users = users;
   }
 

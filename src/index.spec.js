@@ -1,5 +1,6 @@
 const { Auth } = require('./facades');
-const { Users } = require('./repositories');
+const { Users,Tokens } = require('./repositories');
+const { TokenService } = require('./services');
 
 function resourceRequestFactory(credentials = '') {
   return {
@@ -31,7 +32,9 @@ describe('Authentication Model Facade', () => {
 
   beforeEach(() => {
     const users = new Users([daniel]);
-    facade = new Auth(users);
+    const tokenService = new TokenService();
+    const tokens = new Tokens(['token1','token2','token3']);
+    facade = new Auth(users,tokenService, tokens);
   });
 
   test('Should successfully login', () => {
@@ -71,6 +74,29 @@ describe('Authentication Model Facade', () => {
 
     const actual = facade.login(request);
 
+    expect(actual).toEqual(expected);
+  });
+});
+
+
+
+describe('Token Repository', () => {
+  let tokens;
+
+  beforeEach(() => {
+    tokens = new Tokens(['token1','token2','token3']);    
+  });
+
+  test('Should not save duplicate token', () => {
+    const expected = false;
+    const actual = tokens.save('token1')
+    expect(actual).toEqual(expected);
+  });
+
+
+  test('Should save unique token', () => {
+    const expected = true;
+    const actual = tokens.save('token4')
     expect(actual).toEqual(expected);
   });
 });
